@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Created-By: Michel Nass
+Main-Class: widgetlocator/WidgetLocator
+Class-Path: . bin/json-simple-1.1.1.jar bin/selenium-server-4.1.3.jar
+

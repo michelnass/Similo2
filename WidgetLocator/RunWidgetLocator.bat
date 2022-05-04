@@ -1,0 +1,1 @@
+java -jar WidgetLocator.jar 0

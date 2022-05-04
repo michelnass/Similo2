@@ -1,0 +1,321 @@
+##### Application: Adobe
+xpath:	0	2	0
+idxpath:	0	2	0
+ide:	2	0	0
+robula:	1	1	0
+montoto:	2	0	0
+Multilocator:	2	0	0
+Similo:	2	0	0
+##### Application: Aliexpress
+xpath:	0	39	0
+idxpath:	4	35	0
+ide:	14	25	0
+robula:	34	4	1
+montoto:	26	13	0
+Multilocator:	37	2	0
+Similo:	39	0	0
+##### Application: Amazon
+xpath:	1	9	0
+idxpath:	7	0	3
+ide:	8	2	0
+robula:	7	2	1
+montoto:	5	5	0
+Multilocator:	9	1	0
+Similo:	10	0	0
+##### Application: Apple
+xpath:	9	1	0
+idxpath:	9	1	0
+ide:	9	1	0
+robula:	9	1	0
+montoto:	9	1	0
+Multilocator:	9	1	0
+Similo:	9	0	1
+##### Application: Bing
+xpath:	0	5	0
+idxpath:	4	1	0
+ide:	4	1	0
+robula:	4	1	0
+montoto:	3	2	0
+Multilocator:	4	1	0
+Similo:	4	0	1
+##### Application: Chase
+xpath:	23	0	8
+idxpath:	23	0	8
+ide:	24	5	2
+robula:	28	2	1
+montoto:	27	4	0
+Multilocator:	30	1	0
+Similo:	30	0	1
+##### Application: Cnn
+xpath:	0	16	0
+idxpath:	0	16	0
+ide:	3	13	0
+robula:	0	16	0
+montoto:	6	10	0
+Multilocator:	7	9	0
+Similo:	11	0	5
+##### Application: Craigslist
+xpath:	0	45	0
+idxpath:	18	15	12
+ide:	34	8	3
+robula:	40	1	4
+montoto:	41	4	0
+Multilocator:	44	1	0
+Similo:	45	0	0
+##### Application: Dropbox
+xpath:	6	4	0
+idxpath:	3	7	0
+ide:	4	4	2
+robula:	6	1	3
+montoto:	5	2	3
+Multilocator:	7	3	0
+Similo:	6	0	4
+##### Application: Ebay
+xpath:	17	4	4
+idxpath:	9	13	3
+ide:	14	7	4
+robula:	20	2	3
+montoto:	20	3	2
+Multilocator:	21	4	0
+Similo:	21	0	4
+##### Application: Espn
+xpath:	0	23	0
+idxpath:	21	2	0
+ide:	9	4	10
+robula:	21	2	0
+montoto:	21	2	0
+Multilocator:	22	1	0
+Similo:	21	0	2
+##### Application: Etsy
+xpath:	0	13	0
+idxpath:	3	3	7
+ide:	10	3	0
+robula:	2	11	0
+montoto:	2	11	0
+Multilocator:	10	3	0
+Similo:	11	0	2
+##### Application: Facebook
+xpath:	0	25	0
+idxpath:	3	22	0
+ide:	19	5	1
+robula:	22	3	0
+montoto:	21	4	0
+Multilocator:	23	2	0
+Similo:	24	0	1
+##### Application: Fidelity
+xpath:	0	19	0
+idxpath:	16	0	3
+ide:	17	2	0
+robula:	17	1	1
+montoto:	14	5	0
+Multilocator:	17	2	0
+Similo:	19	0	0
+##### Application: Force
+xpath:	0	17	0
+idxpath:	0	17	0
+ide:	0	9	8
+robula:	0	17	0  // Disabled since not working
+montoto:	0	17	0
+Multilocator:	0	17	0
+Similo:	17	0	0
+##### Application: Google
+xpath:	19	1	0
+idxpath:	16	4	0
+ide:	15	5	0
+robula:	19	1	0
+montoto:	19	1	0
+Multilocator:	20	0	0
+Similo:	20	0	0
+##### Application: Hulu
+xpath:	0	2	0
+idxpath:	0	2	0
+ide:	0	2	0
+robula:	0	2	0
+montoto:	0	2	0
+Multilocator:	0	2	0
+Similo:	1	0	1
+##### Application: Indeed
+xpath:	0	13	0
+idxpath:	0	13	0
+ide:	0	13	0
+robula:	0	12	1
+montoto:	3	9	1
+Multilocator:	3	10	0
+Similo:	13	0	0
+##### Application: Instagram
+xpath:	0	15	0
+idxpath:	4	11	0
+ide:	6	8	1
+robula:	7	8	0
+montoto:	2	13	0
+Multilocator:	10	5	0
+Similo:	14	0	1
+##### Application: Instructure
+xpath:	0	2	0
+idxpath:	0	2	0
+ide:	0	2	0
+robula:	0	2	0
+montoto:	0	2	0
+Multilocator:	0	2	0
+Similo:	1	0	1
+##### Application: Intuit
+xpath:	0	11	0
+idxpath:	0	11	0
+ide:	5	4	2
+robula:	4	5	2
+montoto:	3	8	0
+Multilocator:	7	4	0
+Similo:	11	0	0
+##### Application: Linkedin
+xpath:	0	4	0
+idxpath:	0	4	0
+ide:	1	3	0
+robula:	1	3	0
+montoto:	1	3	0
+Multilocator:	1	3	0
+Similo:	3	0	1
+##### Application: Live
+xpath:	0	3	0
+idxpath:	0	3	0
+ide:	0	3	0
+robula:	0	3	0
+montoto:	0	3	0
+Multilocator:	0	3	0
+Similo:	1	0	2
+##### Application: Microsoft
+xpath:	0	4	0
+idxpath:	0	4	0
+ide:	0	4	0
+robula:	0	4	0
+montoto:	0	4	0
+Multilocator:	0	4	0
+Similo:	3	0	1
+##### Application: Microsoftonline
+xpath:	0	6	0
+idxpath:	0	6	0
+ide:	0	6	0
+robula:	0	6	0
+montoto:	0	4	2
+Multilocator:	0	6	0
+Similo:	0	0	6
+##### Application: Myshopify
+xpath:	0	2	0
+idxpath:	0	2	0
+ide:	0	2	0
+robula:	0	2	0
+montoto:	0	2	0
+Multilocator:	0	2	0
+Similo:	0	0	2
+##### Application: Netflix
+xpath:	0	3	0
+idxpath:	0	3	0
+ide:	2	1	0
+robula:	0	3	0
+montoto:	1	2	0
+Multilocator:	2	1	0
+Similo:	1	0	2
+##### Application: Nytimes
+xpath:	0	23	0
+idxpath:	22	1	0
+ide:	23	0	0
+robula:	20	3	0
+montoto:	1	22	0
+Multilocator:	23	0	0
+Similo:	23	0	0
+##### Application: Office
+xpath:	9	3	0
+idxpath:	8	4	0
+ide:	6	6	0
+robula:	7	5	0
+montoto:	9	3	0
+Multilocator:	10	2	0
+Similo:	10	0	2
+##### Application: Okta
+xpath:	0	10	0
+idxpath:	2	8	0
+ide:	8	2	0
+robula:	4	6	0
+montoto:	3	7	0
+Multilocator:	9	1	0
+Similo:	8	0	2
+##### Application: Reddit
+xpath:	23	1	6
+idxpath:	23	1	6
+ide:	27	3	0
+robula:	29	1	0
+montoto:	23	7	0
+Multilocator:	30	0	0
+Similo:	30	0	0
+##### Application: Twitch
+xpath:	0	5	0
+idxpath:	0	5	0
+ide:	0	5	0
+robula:	0	5	0
+montoto:	0	5	0
+Multilocator:	0	5	0
+Similo:	3	0	2
+##### Application: Twitter
+xpath:	0	20	0
+idxpath:	0	20	0
+ide:	1	19	0
+robula:	8	6	6
+montoto:	0	20	0
+Multilocator:	9	11	0
+Similo:	20	0	0
+##### Application: Walmart
+xpath:	0	7	0
+idxpath:	1	6	0
+ide:	2	5	0
+robula:	1	6	0
+montoto:	0	7	0
+Multilocator:	2	5	0
+Similo:	5	0	2
+##### Application: Wellsfargo
+xpath:	15	20	0
+idxpath:	34	1	0
+ide:	29	5	1
+robula:	34	1	0
+montoto:	28	7	0
+Multilocator:	35	0	0
+Similo:	35	0	0
+##### Application: Wikipedia
+xpath:	3	36	0
+idxpath:	13	26	0
+ide:	14	25	0
+robula:	37	1	1
+montoto:	25	14	0
+Multilocator:	39	0	0
+Similo:	39	0	0
+##### Application: Yahoo
+xpath:	0	17	0
+idxpath:	0	17	0
+ide:	2	14	1
+robula:	0	17	0
+montoto:	2	15	0
+Multilocator:	4	13	0
+Similo:	13	0	4
+##### Application: Youtube
+xpath:	0	8	0
+idxpath:	0	8	0
+ide:	0	8	0
+robula:	0	8	0
+montoto:	0	8	0
+Multilocator:	0	8	0
+Similo:	3	0	5
+##### Application: Zillow
+xpath:	0	9	0
+idxpath:	0	9	0
+ide:	5	4	0
+robula:	0	9	0
+montoto:	0	9	0
+Multilocator:	5	4	0
+Similo:	8	0	1
+##### Application: Zoom
+xpath:	0	8	0
+idxpath:	1	5	2
+ide:	2	4	2
+robula:	4	4	0
+montoto:	3	5	0
+Multilocator:	4	4	0
+Similo:	5	0	3
+
