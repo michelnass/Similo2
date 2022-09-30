@@ -1,0 +1,80 @@
+##### Application: Apple
+deltaTimeML=412
+averageTimeML=41
+deltaTime1=96
+deltaTime2=27
+noTargets=10
+noCandidates=344
+averageTimeSimilo=12
+##### Application: Netflix
+deltaTimeML=127
+averageTimeML=42
+deltaTime1=25
+deltaTime2=12
+noTargets=3
+noCandidates=157
+averageTimeSimilo=12
+##### Application: Espn
+deltaTimeML=811
+averageTimeML=35
+deltaTime1=153
+deltaTime2=110
+noTargets=23
+noCandidates=1066
+averageTimeSimilo=11
+##### Application: Amazon
+deltaTimeML=378
+averageTimeML=37
+deltaTime1=259
+deltaTime2=53
+noTargets=10
+noCandidates=1762
+averageTimeSimilo=31
+##### Application: Fidelity
+deltaTimeML=647
+averageTimeML=34
+deltaTime1=109
+deltaTime2=55
+noTargets=19
+noCandidates=498
+averageTimeSimilo=8
+##### Application: Paypal
+deltaTimeML=773
+averageTimeML=33
+deltaTime1=27
+deltaTime2=62
+noTargets=23
+noCandidates=192
+averageTimeSimilo=3
+##### Application: Instagram
+deltaTimeML=516
+averageTimeML=34
+deltaTime1=20
+deltaTime2=32
+noTargets=15
+noCandidates=107
+averageTimeSimilo=3
+##### Application: Reddit
+deltaTimeML=959
+averageTimeML=31
+deltaTime1=116
+deltaTime2=225
+noTargets=30
+noCandidates=1223
+averageTimeSimilo=11
+##### Application: Usps
+deltaTimeML=1108
+averageTimeML=30
+deltaTime1=67
+deltaTime2=170
+noTargets=36
+noCandidates=583
+averageTimeSimilo=6
+##### Application: Twitter
+deltaTimeML=618
+averageTimeML=30
+deltaTime1=23
+deltaTime2=57
+noTargets=20
+noCandidates=68
+averageTimeSimilo=4

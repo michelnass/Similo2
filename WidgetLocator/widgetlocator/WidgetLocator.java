@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,51 +24,51 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 public class WidgetLocator
 {
-	private static String[] LOCATORS =           { "tag", "class", "name", "id", "href", "alt", "xpath", "idxpath", "is_button", "location", "area", "shape", "visible_text", "neighbor_text" };
-	private Integer[] WEIGHTS =                  { 150,    50,      150,    150,  50,     50,    50,      50,         50,         50,         50,     50,      150,            150 };
-	private static Integer[] DISTANCE_FUNCTION = { 0,      1,       0,      0,    1,      1,     1,       1,          0,          3,          2,      2,       1,              4 };
+	private static String[] LOCATORS =         { "tag", "class", "name", "id", "href", "alt", "xpath", "idxpath", "is_button", "location", "area", "shape", "visible_text", "neighbor_text" };
+	private double[] WEIGHTS =                 { 1.5,   0.5,     1.5,    1.5,  0.5,    0.5,   0.5,     0.5,       0.5,         0.5,        0.5,    0.5,     1.5,            1.5 };
+	private static int[] SIMILARITY_FUNCTION = { 0,     1,       0,      0,    1,      1,     1,       1,         0,           3,          2,      2,       1,              4 };
 	private static int FIRST_APP_INDEX = 0;
 	private static int END_APP_INDEX = FIRST_APP_INDEX;
-	private static boolean USE_MULTILOCATOR = true;
+	private static int NO_THREADS = 20;
 
 	private static Hashtable<String, List<File>> folderHash = new Hashtable<String, List<File>>();
 	private static Hashtable<String, Properties> propertiesHash = new Hashtable<String, Properties>();
 
 	private WebDriver webDriver=null;
 	private String elementsToExtract="input,textarea,button,select,a,h1,h2,h3,h4,h5,li,span,div,p,th,tr,td,label,svg";
-	
+
 	private static String[] OLD_WEB_SITES = {"https://web.archive.org/web/20180702000525if_/https://www.adobe.com/", "https://web.archive.org/web/20170401212838if_/https://www.aliexpress.com/", "https://web.archive.org/web/20170402if_/http://www.amazon.com/",
-			"https://web.archive.org/web/20171002003641if_/https://www.apple.com/", "https://web.archive.org/web/20191201234246if_/http://www.bing.com/", "https://web.archive.org/web/20181202045722if_/https://www.chase.com/",
+			"https://web.archive.org/web/20171002003641if_/https://www.apple.com/", "https://web.archive.org/web/20180401if_/https://www.bestbuy.com/", "https://web.archive.org/web/20191201234246if_/http://www.bing.com/", "https://web.archive.org/web/20181202045722if_/https://www.chase.com/",
 			"https://web.archive.org/web/20180402002511if_/https://www.cnn.com/", "https://web.archive.org/web/20160331202313if_/http://sfbay.craigslist.org/", "https://web.archive.org/web/20191202001310if_/https://www.dropbox.com/?landing=dbv2",
 			"https://web.archive.org/web/20180601235610if_/https://www.ebay.com/", "https://web.archive.org/web/20191201233248if_/https://www.espn.com/", "https://web.archive.org/web/20191002005309if_/https://www.etsy.com/",
-			"https://web.archive.org/web/20161101030329/https://www.facebook.com/", "https://web.archive.org/web/20180102000534if_/https://www.fidelity.com/", "https://web.archive.org/web/20190201214503if_/https://www.salesforce.com/products/platform/products/force/?d=70130000000f27V&internal=true",
-			"https://web.archive.org/web/20180802000242if_/https://www.google.com/", "https://web.archive.org/web/20191201225319if_/https://www.hulu.com/welcome", "https://web.archive.org/web/20151202004335if_/http://www.indeed.com/",
+			"https://web.archive.org/web/20161101030329/https://www.facebook.com/", "https://web.archive.org/web/20180102000534if_/https://www.fidelity.com/", "https://web.archive.org/web/20190201214503if_/https://www.salesforce.com/products/platform/products/force/?d=70130000000f27V&internal=true", "https://web.archive.org/web/20180801233843if_/http://www.foxnews.com/",
+			"https://web.archive.org/web/20180802000242if_/https://www.google.com/", "https://web.archive.org/web/20191201225319if_/https://www.hulu.com/welcome", "https://web.archive.org/web/20190602000208if_/https://www.imdb.com/", "https://web.archive.org/web/20151202004335if_/http://www.indeed.com/",
 			"https://web.archive.org/web/20180602003550if_/https://www.instagram.com/", "https://web.archive.org/web/20171101205846if_/https://www.instructure.com/", "https://web.archive.org/web/20190401223517if_/https://www.intuit.com/",
 			"https://web.archive.org/web/20170802004444if_/https://www.linkedin.com/", "https://web.archive.org/web/20170801235424if_/https://outlook.live.com/owa/", "https://web.archive.org/web/20160602021830if_/http://www.microsoft.com/en-us/",
 			"https://web.archive.org/web/201802if_/https://login.microsoftonline.com/", "https://web.archive.org/web/20160101232822if_/https://www.shopify.com/", "https://web.archive.org/web/20161003001630if_/https://www.netflix.com/ca/",
-			"https://web.archive.org/web/20181201235804if_/https://www.nytimes.com/", "https://web.archive.org/web/20190301225930if_/https://www.office.com/", "https://web.archive.org/web/20171102031615if_/https://www.okta.com/",
-			"https://web.archive.org/web/20170304235734if_/https://www.reddit.com/", "https://web.archive.org/web/20160301234356if_/http://www.twitch.tv/", "https://web.archive.org/web/20170702000250if_/https://twitter.com/",
+			"https://web.archive.org/web/20181201235804if_/https://www.nytimes.com/", "https://web.archive.org/web/20190301225930if_/https://www.office.com/", "https://web.archive.org/web/20171102031615if_/https://www.okta.com/", "https://web.archive.org/web/20190702000032if_/https://www.paypal.com/us/home",
+			"https://web.archive.org/web/20170304235734if_/https://www.reddit.com/", "https://web.archive.org/web/20171001232623if_/https://www.spotify.com/us/", "https://web.archive.org/web/20170602003201if_/http://www.target.com/", "https://web.archive.org/web/20160301234356if_/http://www.twitch.tv/", "https://web.archive.org/web/20170702000250if_/https://twitter.com/", "https://web.archive.org/web/20170629135919if_/https://www.ups.com/us/en/Home.page", "https://web.archive.org/web/20171202144652/https://www.usps.com/",
 			"https://web.archive.org/web/20170902000248if_/https://www.walmart.com/", "https://web.archive.org/web/20191002055021if_/https://www.wellsfargo.com/", "https://web.archive.org/web/20170901235350if_/https://www.wikipedia.org/",
 			"https://web.archive.org/web/20181101/https://www.yahoo.com/", "https://web.archive.org/web/20190801/https://www.youtube.com/", "https://web.archive.org/web/20170801211941if_/https://www.zillow.com/",
 			"https://web.archive.org/web/20160501084828/http://zoom.us/"};
 
 	private static String[] NEW_WEB_SITES = {"https://web.archive.org/web/20201102003024if_/https://www.adobe.com/", "https://web.archive.org/web/20201201235538if_/https://www.aliexpress.com/", "https://web.archive.org/web/20201201if_/https://www.amazon.com/",
-			"https://web.archive.org/web/20201201235612if_/https://www.apple.com/", "https://web.archive.org/web/20201201234200if_/https://www.bing.com/", "https://web.archive.org/web/20201202004756if_/https://www.chase.com/",
+			"https://web.archive.org/web/20201201235612if_/https://www.apple.com/", "https://web.archive.org/web/20201201233637if_/https://www.bestbuy.com/", "https://web.archive.org/web/20201201234200if_/https://www.bing.com/", "https://web.archive.org/web/20201202004756if_/https://www.chase.com/",
 			"https://web.archive.org/web/20201201235755if_/https://www.cnn.com/", "https://web.archive.org/web/20201202081744if_/https://sfbay.craigslist.org/", "https://web.archive.org/web/20201204000601if_/https://www.dropbox.com/?landing=dbv2",
 			"https://web.archive.org/web/20201202000703if_/https://www.ebay.com/", "https://web.archive.org/web/20201202000942if_/https://www.espn.com/", "https://web.archive.org/web/20201201233425if_/https://www.etsy.com/",
-			"https://web.archive.org/web/20201201011205/https://www.facebook.com/", "https://web.archive.org/web/20201201211643if_/https://www.fidelity.com/", "https://web.archive.org/web/20201201203858if_/https://www.salesforce.com/products/platform/products/force/?sfdc-redirect=300&bc=WA",
-			"https://web.archive.org/web/20201201235949if_/https://www.google.com/", "https://web.archive.org/web/20201202000152if_/https://www.hulu.com/welcome", "https://web.archive.org/web/20201201225703if_/https://www.indeed.com/",
+			"https://web.archive.org/web/20201201011205/https://www.facebook.com/", "https://web.archive.org/web/20201201211643if_/https://www.fidelity.com/", "https://web.archive.org/web/20201201203858if_/https://www.salesforce.com/products/platform/products/force/?sfdc-redirect=300&bc=WA", "https://web.archive.org/web/20201201235925if_/https://www.foxnews.com/",
+			"https://web.archive.org/web/20201201235949if_/https://www.google.com/", "https://web.archive.org/web/20201202000152if_/https://www.hulu.com/welcome", "https://web.archive.org/web/20201201233544if_/https://www.imdb.com/", "https://web.archive.org/web/20201201225703if_/https://www.indeed.com/",
 			"https://web.archive.org/web/20201202000011if_/https://www.instagram.com/", "https://web.archive.org/web/20201202000839if_/https://www.instructure.com/", "https://web.archive.org/web/20201202032948if_/https://www.intuit.com/",
 			"https://web.archive.org/web/20201202011337if_/https://www.linkedin.com/", "https://web.archive.org/web/20201201235603if_/https://outlook.live.com/owa/", "https://web.archive.org/web/20201201234606if_/https://www.microsoft.com/en-us/",
 			"https://web.archive.org/web/20201201if_/https://login.microsoftonline.com/", "https://web.archive.org/web/20201202023130if_/http://myshopify.com/", "https://web.archive.org/web/20201201180555if_/https://www.netflix.com/",
-			"https://web.archive.org/web/20201202001128if_/https://www.nytimes.com/", "https://web.archive.org/web/20201201232252if_/https://www.office.com/", "https://web.archive.org/web/20201201231944if_/https://www.okta.com/",
-			"https://web.archive.org/web/20201201132702if_/https://www.reddit.com/", "https://web.archive.org/web/20201202000056if_/https://www.twitch.tv/", "https://web.archive.org/web/20201201235946if_/https://twitter.com/",
+			"https://web.archive.org/web/20201202001128if_/https://www.nytimes.com/", "https://web.archive.org/web/20201201232252if_/https://www.office.com/", "https://web.archive.org/web/20201201231944if_/https://www.okta.com/", "https://web.archive.org/web/20201202000650if_/https://www.paypal.com/us/home",
+			"https://web.archive.org/web/20201201132702if_/https://www.reddit.com/", "https://web.archive.org/web/20201201235821if_/https://www.spotify.com/us/", "https://web.archive.org/web/20201201233605if_/https://www.target.com/", "https://web.archive.org/web/20201202000056if_/https://www.twitch.tv/", "https://web.archive.org/web/20201201235946if_/https://twitter.com/", "https://web.archive.org/web/20201127140803if_/https://www.ups.com/us/en/Home.page", "https://web.archive.org/web/20201201112228/https://www.usps.com/",
 			"https://web.archive.org/web/20201201235513if_/https://www.walmart.com/", "https://web.archive.org/web/20201201235604if_/https://www.wellsfargo.com/", "https://web.archive.org/web/20201202002020if_/https://www.wikipedia.org/",
 			"https://web.archive.org/web/20201202/https://www.yahoo.com/", "https://web.archive.org/web/20201201/https://www.youtube.com/", "https://web.archive.org/web/20201201214009if_/https://www.zillow.com/",
 			"https://web.archive.org/web/20201202004452/https://zoom.us/"};
 
-	private Neuron similoOutputNeuron=null;
 	private boolean logOn = true;
+	private long highestDuration = 0;
 
 	public WidgetLocator(String[] args)
 	{
@@ -80,7 +81,10 @@ public class WidgetLocator
 		{
 			END_APP_INDEX = string2Int(args[1]);
 		}
-		similoOutputNeuron=createNetwork();
+//		convertToProperties("apps/Ups");
+//		logWebElements();
+//		double similarity=((double)compareDistance("OK Cancel", "Cancel Help OK", 100))/100;
+//		double similarity2=((double)compareNeighborText("OK Cancel", "Cancel Help OK", 100))/100;
 		locateWebElements();
 	}
 
@@ -96,20 +100,6 @@ public class WidgetLocator
 			i++;
 		}
 		return 0;
-	}
-
-	private Neuron createNetwork()
-	{
-		Neuron outputNeuron=new Neuron();
-		for (String locator : LOCATORS)
-		{
-			Neuron inputNeuron=new Neuron();
-			inputNeuron.setName(locator);
-			int index=getLocatorIndex(locator);
-			double weight=((double)WEIGHTS[index])/100;
-			outputNeuron.connectNeuron(inputNeuron, weight);
-		}
-		return outputNeuron;
 	}
 
 	private String fromIdeToXPath(String ide)
@@ -143,17 +133,63 @@ public class WidgetLocator
 		}
 	}
 
-	private long locateWebElements()
+	private String pathToIndexPath(String path)
+	{
+		StringBuffer buf = new StringBuffer();
+		char previousChar = ']';
+		for(int i=0; i<path.length(); i++)
+		{
+			char c = path.charAt(i);
+			if(c == '/' && previousChar != ']')
+			{
+				buf.append("[1]");
+			}
+			buf.append(c);
+			previousChar = c;
+		}
+		if(previousChar != ']')
+		{
+			buf.append("[1]");
+		}
+		return buf.toString();
+	}
+
+	private void convertToProperties(String folderPath)
 	{
 		try
 		{
-			if(USE_MULTILOCATOR)
+			BufferedReader br = new BufferedReader(new FileReader(folderPath+"/data/xpaths.txt"));
+			int count=0;
+			try
 			{
-				System.setProperty("webdriver.chrome.driver", (new File("bin/drivers/chromedriver.exe")).getAbsolutePath());
-				webDriver=new ChromeDriver();
-				webDriver.manage().timeouts().setScriptTimeout(300, TimeUnit.SECONDS);
+			    String line1 = br.readLine();
+			    String line2 = br.readLine();
+			    String line3 = br.readLine();
+			    while (line1 != null && line2 != null) {
+						String filename = folderPath+"/"+count+".properties";
+						log(filename, "old_xpath="+pathToIndexPath(line1));
+						log(filename, "new_xpath="+pathToIndexPath(line2));
+						count++;
+		        line1 = br.readLine();
+		        line2 = br.readLine();
+		        line3 = br.readLine();
+			    }
 			}
+			finally
+			{
+			    br.close();
+			}
+		}
+		catch (Exception e)
+		{
+			log("Error: " + e.toString());
+		}
+	}
 
+	private long logWebElements()
+	{
+		try
+		{
 			List<File> apps = getFolders("apps");
 			int startAppNo = FIRST_APP_INDEX;
 			int endAppNo = apps.size();
@@ -168,32 +204,15 @@ public class WidgetLocator
 				File targetWidgetsFolder = new File(app, "target_widgets");
 				List<File> targetFolderFiles = getFolderFiles(targetWidgetsFolder);
 
-				if(USE_MULTILOCATOR)
+				for (File targetWidget : targetFolderFiles)
 				{
-					String url=OLD_WEB_SITES[appNo];
-					webDriver.get(url);
-					delay(10000);
-
-					for (File targetWidget : targetFolderFiles)
-					{
-						Properties targetWidgetProperty = loadProperties(targetWidget);
-						String xPath = targetWidgetProperty.getProperty("xpath", null);
-						Locator locator = getLocatorForElement(xPath);
-						if(locator!=null)
-						{
-							String widgetId = targetWidgetProperty.getProperty("widget_id", null);
-							addMetadata(locator, "widget_id", widgetId);
-							targetLocators.add(locator);
-						}
-						else
-						{
-							log("No locator for xpath: " + xPath);
-						}
-					}
-
-					url=NEW_WEB_SITES[appNo];
-					webDriver.get(url);
-					delay(10000);
+					Properties targetWidgetProperty = loadProperties(targetWidget);
+					String xPath = targetWidgetProperty.getProperty("xpath", null);
+					Locator locator = new Locator();
+					String widgetId = targetWidgetProperty.getProperty("widget_id", null);
+					addMetadata(locator, "xpath", xPath);
+					addMetadata(locator, "widget_id", widgetId);
+					targetLocators.add(locator);
 				}
 
 				File candidateWidgetsFolder = new File(app, "candidate_widgets");
@@ -204,121 +223,171 @@ public class WidgetLocator
 					Properties candidateWidgetProperty = loadProperties(candidateWidget);
 					candidateWidgetProperties.add(candidateWidgetProperty);
 				}
-				
-				if(USE_MULTILOCATOR)
-				{
-					Boolean[] locatedByOne = new Boolean[targetLocators.size()];
-					for(int i=0; i<targetLocators.size(); i++)
-					{
-						locatedByOne[i] = false;
-					}
-					String[] xPathLocators = {"xpath", "idxpath", "ide", "robula", "montoto"};
-					for(String xPathLocator:xPathLocators)
-					{
-						int located = 0;
-						int notLocated = 0;
-						int incorrectlyLocated = 0;
-						int targetLocatorNo = 0;
-						for(Locator targetLocator:targetLocators)
-						{
-							String targetXPath = targetLocator.getMetadata(xPathLocator);
-							if(xPathLocator.equals("ide"))
-							{
-								targetXPath = fromIdeToXPath(targetXPath);
-							}
-							Locator candidateLocator = getXPathLocatorForElement(targetXPath);
-							if(candidateLocator!=null)
-							{
-								// Found a candidate
-								String widgetId = targetLocator.getMetadata("widget_id");
-								String candidateXPath = getXPathFromWidgetId(widgetId, candidateWidgetProperties);
-								Locator correctCandidateLocator = getXPathLocatorForElement(candidateXPath);
 
-								boolean isMatch1=false;
-								boolean isMatch2=false;
-								String bestCandidateXPath = candidateLocator.getMetadata("xpath");
-								if(almostIdenticalXPaths(bestCandidateXPath, candidateXPath))
-								{
-									isMatch1 = true;
-								}
-								if(isCorrectWebElement(candidateLocator, correctCandidateLocator))
-								{
-									isMatch2 = true;
-								}
-								if(isMatch1 && isMatch2)
-								{
-									located++;
-									locatedByOne[targetLocatorNo] = true;
-								}
-								else if(isMatch1 || isMatch2)
-								{
-									located++;
-									locatedByOne[targetLocatorNo] = true;
-								}
-								else
-								{
-									incorrectlyLocated++;
-								}
+				int count=0;
+				for(Locator targetLocator:targetLocators)
+				{
+					String targetXPath = targetLocator.getMetadata("xpath");
+					String widgetId = targetLocator.getMetadata("widget_id");
+
+					for(Properties candidateWidgetProperty:candidateWidgetProperties)
+					{
+						String candidateWidgetId = candidateWidgetProperty.getProperty("widget_id");
+						if(candidateWidgetId!=null && widgetId.equals(candidateWidgetId))
+						{
+							String candidateWidgetXPath = candidateWidgetProperty.getProperty("xpath");
+							String filename = app.getAbsolutePath()+"/"+count+".properties";
+							log(filename, "old_xpath="+targetXPath);
+							log(filename, "new_xpath="+candidateWidgetXPath);
+							count++;
+						}
+					}
+				}
+			}
+			return 0;
+		}
+		catch (Exception e)
+		{
+			log("Error: " + e.toString());
+			return 0;
+		}
+	}
+
+	private long locateWebElements()
+	{
+		System.setProperty("webdriver.chrome.driver", (new File("bin/drivers/chromedriver.exe")).getAbsolutePath());
+		webDriver=new ChromeDriver();
+		webDriver.manage().timeouts().setScriptTimeout(300, TimeUnit.SECONDS);
+
+		List<File> apps = getFolders("apps");
+		int startAppNo = FIRST_APP_INDEX;
+		int endAppNo = apps.size();
+		endAppNo = END_APP_INDEX;
+		for(int appNo=startAppNo; appNo<=endAppNo; appNo++)
+		{
+			try
+			{
+				File app = apps.get(appNo);
+				
+				logTable("##### Application: " + app.getName() + "(" + appNo + ")");
+
+				List<Locator> targetLocators = new ArrayList<Locator>();
+				List<File> targetFolderFiles = getFolderFiles(app);
+
+				String url=OLD_WEB_SITES[appNo];
+				webDriver.get(url);
+				delay(20000);
+
+				for (File targetWidget : targetFolderFiles)
+				{
+					Properties targetWidgetProperty = loadProperties(targetWidget);
+					String xPath = targetWidgetProperty.getProperty("old_xpath", null);
+					Locator locator = getLocatorForElement(xPath);
+					if(locator!=null)
+					{
+						addMetadata(locator, "old_xpath", xPath);
+						String newXPath = targetWidgetProperty.getProperty("new_xpath", null);
+						addMetadata(locator, "new_xpath", newXPath);
+						targetLocators.add(locator);
+					}
+					else
+					{
+						log("No locator for xpath: " + xPath);
+					}
+				}
+
+				url=NEW_WEB_SITES[appNo];
+				webDriver.get(url);
+				delay(10000);
+
+				Boolean[] locatedByOne = new Boolean[targetLocators.size()];
+				for(int i=0; i<targetLocators.size(); i++)
+				{
+					locatedByOne[i] = false;
+				}
+				String[] xPathLocators = {"xpath", "idxpath", "ide", "robula", "montoto"};
+				for(String xPathLocator:xPathLocators)
+				{
+					int located = 0;
+					int notLocated = 0;
+					int incorrectlyLocated = 0;
+					int targetLocatorNo = 0;
+					for(Locator targetLocator:targetLocators)
+					{
+						String targetXPath = targetLocator.getMetadata(xPathLocator);
+						if(xPathLocator.equals("ide"))
+						{
+							targetXPath = fromIdeToXPath(targetXPath);
+						}
+						Locator candidateLocator = getXPathLocatorForElement(targetXPath);
+						if(candidateLocator!=null)
+						{
+							// Found a candidate
+							String elementXPath = candidateLocator.getMetadata("xpath");
+							String candidateXPath = targetLocator.getMetadata("new_xpath");
+							if(almostIdenticalXPaths(elementXPath, candidateXPath))
+							{
+								// Found the correct candidate
+								located++;
+								locatedByOne[targetLocatorNo] = true;
 							}
 							else
 							{
-								// Did not find a candidate
-								notLocated++;
+								incorrectlyLocated++;
 							}
-							targetLocatorNo++;
-						}
-						logTable(xPathLocator+":\t"+located+"\t"+notLocated+"\t"+incorrectlyLocated);
-					}
-					
-					int located = 0;
-					int notLocated = 0;
-					for(Boolean oneLocated:locatedByOne)
-					{
-						if(oneLocated)
-						{
-							located++;
 						}
 						else
 						{
+							// Did not find a candidate
 							notLocated++;
 						}
+						targetLocatorNo++;
 					}
-					logTable("Multilocator:\t"+located+"\t"+notLocated+"\t0");
+					logTable(xPathLocator+":\t"+located+"\t"+notLocated+"\t"+incorrectlyLocated);
 				}
+				
+				int located = 0;
+				int notLocated = 0;
+				for(Boolean oneLocated:locatedByOne)
+				{
+					if(oneLocated)
+					{
+						located++;
+					}
+					else
+					{
+						notLocated++;
+					}
+				}
+
+				logTable("Multilocator:\t"+located+"\t"+notLocated+"\t0");
 
 				List<Locator> candidateLocators = getLocators();
 
-				int located = 0;
-				int notLocated = 0;
+				if(targetLocators.size()>0)
+				{
+					// Load classes
+					similo(targetLocators.get(0), candidateLocators);
+				}
+
+				long timeLocateAllTargets = 0;
+
+				located = 0;
+				notLocated = 0;
 				int incorrectlyLocated = 0;
 				for(Locator targetLocator:targetLocators)
 				{
-					Locator candidateLocator = similo(targetLocator, candidateLocators);
-					if(candidateLocator==null)
+					Locator bestCandidate = similo(targetLocator, candidateLocators);
+					timeLocateAllTargets += highestDuration;
+					if(bestCandidate==null)
 					{
 						notLocated++;
 					}
 					else
 					{
-						String widgetId = targetLocator.getMetadata("widget_id");
-						String candidateXPath = getXPathFromWidgetId(widgetId, candidateWidgetProperties);
-						Locator correctCandidateLocator = getXPathLocatorForElement(candidateXPath);
-						boolean isMatch1=false;
-						boolean isMatch2=false;
-						String bestCandidateXPath = candidateLocator.getMetadata("xpath");
-						if(almostIdenticalXPaths(bestCandidateXPath, candidateXPath))
-						{
-							isMatch1 = true;
-						}
-						if(isCorrectWebElement(candidateLocator, correctCandidateLocator))
-						{
-							isMatch2 = true;
-						}
-						if(isMatch1 && isMatch2)
-						{
-							located++;
-						}
-						else if(isMatch1 || isMatch2)
+						String bestCandidateXPath = bestCandidate.getMetadata("xpath");
+						String correctCandidateXPath = targetLocator.getMetadata("new_xpath");
+						if(almostIdenticalXPaths(bestCandidateXPath, correctCandidateXPath))
 						{
 							located++;
 						}
@@ -328,26 +397,29 @@ public class WidgetLocator
 						}
 					}
 				}
+				if(targetLocators.size()>0)
+				{
+					long timePerTarget = timeLocateAllTargets / targetLocators.size();
+					logPerformance(app.getName()+"\t"+timeLocateAllTargets+"\t"+targetLocators.size()+"\t"+candidateLocators.size()+"\t"+timePerTarget);
+				}
 				logTable("Similo:\t"+located+"\t"+notLocated+"\t"+incorrectlyLocated);
-			}
 				
-			if(USE_MULTILOCATOR)
-			{
-				webDriver.close();
-				webDriver.quit();
+				if(webDriver!=null)
+				{
+					webDriver.close();
+				}
 			}
-			return 0;
-		}
-		catch (Exception e)
-		{
-			log("Error: " + e.toString());
-			if(webDriver!=null)
+			catch (Exception e)
 			{
-				webDriver.close();
-				webDriver.quit();
+				log("Error: " + e.toString());
+				if(webDriver!=null)
+				{
+					webDriver.close();
+				}
 			}
-			return 0;
 		}
+		webDriver.quit();
+		return 0;
 	}
 
 	private String removeLastElement(String xpath)
@@ -358,21 +430,6 @@ public class WidgetLocator
 			return xpath.substring(0, lastIndex);
 		}
 		return xpath;
-	}
-
-	private boolean isCorrectWebElement(Locator candidateLocator, Locator correctCandidateLocator)
-	{
-		if(candidateLocator==null || correctCandidateLocator==null)
-		{
-			return false;
-		}
-		Rectangle candidateRectangle = candidateLocator.getLocationArea();
-		Rectangle correctCandidateRectangle = correctCandidateLocator.getLocationArea();
-		if(correctCandidateRectangle.contains(candidateRectangle.getCenterX(), candidateRectangle.getCenterY()))
-		{
-			return true;
-		}
-		return false;
 	}
 
 	private boolean almostIdenticalXPaths(String xpath1, String xpath2)
@@ -413,71 +470,179 @@ public class WidgetLocator
 		return null;
 	}
 
+	private class FindWebElementsThread extends Thread
+	{
+		private Locator targetWidget;
+		private List<Locator> candidateWidgets;
+
+		public FindWebElementsThread(Locator targetWidget, List<Locator> candidateWidgets)
+		{
+			this.targetWidget = targetWidget;
+			this.candidateWidgets = candidateWidgets;
+		}
+
+		public void run()
+		{
+			similoCalculation(targetWidget, candidateWidgets);
+		}
+	}
+
 	private Locator similo(Locator targetWidget, List<Locator> candidateWidgets)
 	{
-		for (Locator candidateWidget : candidateWidgets)
+//		similoCalculation(targetWidget, candidateWidgets);
+
+		for(Locator candidateWidget:candidateWidgets)
 		{
-			double similarityScore = calcScore(targetWidget, candidateWidget);
-			candidateWidget.setScore(similarityScore);
+			candidateWidget.setDuration(0);
 		}
-		Locator.setSortOnScore(true);
+
+		// Split candidateWidgets for each thread
+		List<List<Locator>> candidateWidgetsList = new ArrayList<List<Locator>>();
+		int candidatesPerThread = candidateWidgets.size() / NO_THREADS + 1;
+		List<Locator> candidateWidgetsToAdd = new ArrayList<Locator>();
+		for(Locator candidateWidget:candidateWidgets)
+		{
+			candidateWidgetsToAdd.add(candidateWidget);
+			if(candidateWidgetsToAdd.size() >= candidatesPerThread)
+			{
+				candidateWidgetsList.add(candidateWidgetsToAdd);
+				candidateWidgetsToAdd = new ArrayList<Locator>();
+			}
+		}
+		if(candidateWidgetsToAdd.size() > 0)
+		{
+			// Add the reminders
+			candidateWidgetsList.add(candidateWidgetsToAdd);
+		}
+		
+		// Create and start threads
+		List<Thread> threads = new ArrayList<Thread>();
+		for(List<Locator> candidateWidgetsInThread:candidateWidgetsList)
+		{
+			Locator targetWidgetClone = targetWidget.clone();
+			Thread thread=new FindWebElementsThread(targetWidgetClone, candidateWidgetsInThread);
+			threads.add(thread);
+			thread.start();
+		}
+		
+		// Wait for the threads to complete
+		try
+		{
+			for(Thread thread:threads)
+			{
+				thread.join();
+			}
+		}
+		catch (InterruptedException e)
+		{
+		}
+
+		highestDuration = 0;
+		for(Locator candidateWidget:candidateWidgets)
+		{
+			if(candidateWidget.getDuration() > highestDuration)
+			{
+				highestDuration = candidateWidget.getDuration();
+			}
+		}
+		
 		Collections.sort(candidateWidgets);
 		Locator bestCandidateWidget = candidateWidgets.get(0);
 		return bestCandidateWidget;
 	}
 
-	private double calcScore(Locator targetWidget, Locator candidateWidget)
+	private void similoCalculation(Locator targetWidget, List<Locator> candidateWidgets)
 	{
-		List<Neuron> inputNeurons=similoOutputNeuron.getConnectedNeurons();
-
-		// Set input similarity
-		for(Neuron inputNeuron:inputNeurons)
+		long startTime = System.currentTimeMillis();
+		double bestSimilarityScore = 0;
+		for (Locator candidateWidget : candidateWidgets)
 		{
-			double similarity=0;
-			String targetValue = targetWidget.getMetadata(inputNeuron.getName());
-			String candidateValue = candidateWidget.getMetadata(inputNeuron.getName());
-			int locatorIndex=getLocatorIndex(inputNeuron.getName());
-			int distanceFunction = DISTANCE_FUNCTION[locatorIndex];
-			if (distanceFunction == 3 || (targetValue != null && candidateValue != null))
+			double similarityScore = 0;
+			if(candidateWidget.getMaxScore() > bestSimilarityScore)
 			{
-				if(distanceFunction == 1)
+				similarityScore = calcSimilarityScore(targetWidget, candidateWidget);
+			}
+			candidateWidget.setScore(similarityScore);
+			if(similarityScore > bestSimilarityScore)
+			{
+				bestSimilarityScore = similarityScore;
+			}
+			long duration = System.currentTimeMillis() - startTime;
+			candidateWidget.setDuration(duration);
+		}
+	}
+
+	private double calcMaxSimilarityScore(Locator candidateWidget)
+	{
+		double similarityScore=0;
+		int index = 0;
+		for (String locator : LOCATORS)
+		{
+			double weight=WEIGHTS[index];
+			String candidateValue = candidateWidget.getMetadata(locator);
+			if(candidateValue != null)
+			{
+				similarityScore += weight;
+			}
+			index++;
+		}
+		return similarityScore;
+	}
+
+	private double calcSimilarityScore(Locator targetWidget, Locator candidateWidget)
+	{
+		double similarityScore=0;
+		int index = 0;
+		for (String locator : LOCATORS)
+		{
+			double weight=WEIGHTS[index];
+			double similarity=0;
+
+			String targetValue = targetWidget.getMetadata(locator);
+			String candidateValue = candidateWidget.getMetadata(locator);
+
+			if(targetValue != null && candidateValue != null)
+			{
+				int similarityFunction = SIMILARITY_FUNCTION[index];
+				if(similarityFunction == 1)
 				{
-					similarity=((double)compareDistance(targetValue, candidateValue, 100))/100;
+					similarity=((double)stringSimilarity(targetValue, candidateValue, 100))/100;
 				}
-				else if(distanceFunction == 2)
+				else if(similarityFunction == 2)
 				{
-					similarity=((double)compareIntegerDistance(targetValue, candidateValue, 100))/100;
+					similarity=((double)integerSimilarity(targetValue, candidateValue, 100))/100;
 				}
-				else if(distanceFunction == 3)
+				else if(similarityFunction == 3)
 				{
-					// Use 2D distance 
+					// Use 2D distance
+
 					int x = string2Int(targetWidget.getMetadata("x"));
 					int y = string2Int(targetWidget.getMetadata("y"));
 					int xc = string2Int(candidateWidget.getMetadata("x"));
 					int yc = string2Int(candidateWidget.getMetadata("y"));
+
 					int dx = x - xc;
 					int dy = y - yc;
 					int pixelDistance = (int)Math.sqrt(dx*dx + dy*dy);
 					similarity = ((double)Math.max(100 - pixelDistance, 0))/100;
 				}
-				else if(distanceFunction == 4)
+				else if(similarityFunction == 4)
 				{
-					similarity=((double)compareNeighborText(targetValue, candidateValue, 100))/100;
+					similarity=((double)neighborTextSimilarity(targetValue, candidateValue, 100))/100;
 				}
 				else
 				{
-					similarity=(double)compareEqual(targetValue, candidateValue, 1);
+					similarity=(double)equalSimilarity(targetValue, candidateValue, 1);
 				}
 			}
-			candidateWidget.scoreParts.put(inputNeuron.getName(), ""+similarity);
-			inputNeuron.setValue(similarity);
+			
+			similarityScore += similarity * weight;
+			index++;
 		}
-		
-		similoOutputNeuron.recalculateValue();
-		return similoOutputNeuron.getValue();
+		return similarityScore;
 	}
 
-	private int compareEqual(String t1, String t2, int maxScore)
+	private int equalSimilarity(String t1, String t2, int maxScore)
 	{
 		if (t1 != null && t2 != null)
 		{
@@ -489,14 +654,14 @@ public class WidgetLocator
 		return 0;
 	}
 
-	private int compareIntegerDistance(String t1, String t2, int maxScore)
+	private int integerSimilarity(String t1, String t2, int maxScore)
 	{
 		int value1 = string2Int(t1);
 		int value2 = string2Int(t2);
-		return compareIntegerDistance(value1, value2, maxScore);
+		return integerSimilarity(value1, value2, maxScore);
 	}
 
-	private int compareIntegerDistance(int value1, int value2, int maxScore)
+	private int integerSimilarity(int value1, int value2, int maxScore)
 	{
 		int distance = Math.abs(value1 - value2);
 		int max = Math.max(value1, value2);
@@ -504,41 +669,36 @@ public class WidgetLocator
 		return score;
 	}
 
-	private int compareDistance(String t1, String t2, int maxScore)
+	private int stringSimilarity(String s1, String s2, int maxScore)
 	{
-		String s1 = t1.toLowerCase();
-		String s2 = t2.toLowerCase();
+		if(s1.length()==0 || s2.length()==0)
+		{
+			return 0;
+		}
 
-		if (s1.equals(s2))
+		if(s1.equals(s2))
 		{
 			return maxScore;
 		}
 
 		// Make sure s1 is longer (or equal)
-		if (s1.length() < s2.length())
+		if(s1.length() < s2.length())
 		{
+			// Swap
 			String swap = s1;
 			s1 = s2;
 			s2 = swap;
 		}
 
-		int editDistance = 0;
-		int bigLen = s1.length();
-		editDistance = computeDistance(s1, s2);
-		if (bigLen == 0)
-		{
-			return maxScore;
-		}
-		else
-		{
-			int score = (bigLen - editDistance) * maxScore / bigLen;
-			return score;
-		}
-
+		int distance = computeLevenshteinDistance(s1, s2);
+		return (s1.length() - distance) * maxScore / s1.length();
 	}
 
-	private int computeDistance(String s1, String s2)
+	private int computeLevenshteinDistance(String s1, String s2)
 	{
+		s1 = stripString(s1);
+		s2 = stripString(s2);
+
 		int[] costs = new int[s2.length() + 1];
 		for (int i = 0; i <= s1.length(); i++)
 		{
@@ -548,7 +708,8 @@ public class WidgetLocator
 				if (i == 0)
 				{
 					costs[j] = j;
-				} else
+				}
+				else
 				{
 					if (j > 0)
 					{
@@ -570,6 +731,21 @@ public class WidgetLocator
 		return costs[s2.length()];
 	}
 
+	private String stripString(String s)
+	{
+		StringBuffer stripped = new StringBuffer();
+		for(int i=0; i<s.length(); i++)
+		{
+			char c = s.charAt(i);
+			if(Character.isAlphabetic(c) || Character.isDigit(c))
+			{
+				stripped.append(c);
+			}
+		}
+		String strippedString = stripped.toString();
+		return strippedString;
+	}
+	
 	private Properties loadProperties(File file)
 	{
 		if(propertiesHash.containsKey(file.getName()))
@@ -648,12 +824,17 @@ public class WidgetLocator
 
 	private void log(String text)
 	{
+		log("WidgetLocatorResults.txt", text);
+	}
+
+	private void log(String filename, String text)
+	{
 		if(!logOn)
 		{
 			return;
 		}
 		System.out.println(text);
-		writeLine("WidgetLocatorResults.txt", text);
+		writeLine(filename, text);
 	}
 
 	private void logTable(String text)
@@ -665,14 +846,13 @@ public class WidgetLocator
 		writeLine("WidgetLocatorResultsTable.txt", text);
 	}
 
-	private void logLocators(String text)
+	private void logPerformance(String text)
 	{
 		if(!logOn)
 		{
 			return;
 		}
-		System.out.println(text);
-		writeLine("locators.txt", text);
+		writeLine("Performance.txt", text);
 	}
 
 	private void writeLine(String filename, String text)
@@ -703,7 +883,6 @@ public class WidgetLocator
 				String javascript = loadTextFile("javascript.js");
 				webDriver.manage().timeouts().setScriptTimeout(300, TimeUnit.SECONDS);
 				JavascriptExecutor executor = (JavascriptExecutor) webDriver;
-				executor.executeScript("window.scrollTo(0, 0)");
 				Object object=executor.executeScript(javascript +
 					"var result = []; " +
 					"var all = document.querySelectorAll('"+elementsToExtract+"'); " +
@@ -753,6 +932,10 @@ public class WidgetLocator
 						Locator locator=new Locator();
 
 						locator.setLocationArea(new Rectangle(x, y, width, height));
+						locator.setX(x);
+						locator.setY(y);
+						locator.setWidth(width);
+						locator.setHeight(height);
 
 						addMetadata(locator, "tag", tag);
 						addMetadata(locator, "class", className);
@@ -763,7 +946,7 @@ public class WidgetLocator
 						addMetadata(locator, "href", href);
 						if(isValidText(text))
 						{
-							addMetadata(locator, "text", text);
+							addMetadata(locator, "text", truncate(text));
 						}
 						addMetadata(locator, "placeholder", placeholder);
 						addMetadata(locator, "title", title);
@@ -795,6 +978,8 @@ public class WidgetLocator
 				for(Locator locator:locators)
 				{
 					addNeighborTexts(locator, locators);
+					double maxScore = calcMaxSimilarityScore(locator);
+					locator.setMaxScore(maxScore);
 				}
 				
 				return locators;
@@ -808,6 +993,19 @@ public class WidgetLocator
 		return null;
 	}
 
+	private String truncate(String text)
+	{
+		if(text==null)
+		{
+			return null;
+		}
+		if(text.length()>50)
+		{
+			return text.substring(0, 49);
+		}
+		return text;
+	}
+	
 	public Locator getLocatorForElement(String elementXPath)
 	{
 		List<Locator> locators=getLocators();
@@ -843,7 +1041,6 @@ public class WidgetLocator
 				String javascript = loadTextFile("javascript.js");
 				webDriver.manage().timeouts().setScriptTimeout(300, TimeUnit.SECONDS);
 				JavascriptExecutor executor = (JavascriptExecutor) webDriver;
-				executor.executeScript("window.scrollTo(0, 0)");
 				Object object=executor.executeScript(javascript +
 					"var result = []; " +
 					"var all = []; " +
@@ -903,6 +1100,10 @@ public class WidgetLocator
 						Locator locator=new Locator();
 
 						locator.setLocationArea(new Rectangle(x, y, width, height));
+						locator.setX(x);
+						locator.setY(y);
+						locator.setWidth(width);
+						locator.setHeight(height);
 
 						addMetadata(locator, "tag", tag);
 						addMetadata(locator, "class", className);
@@ -924,6 +1125,7 @@ public class WidgetLocator
 						addMetadata(locator, "y", yStr);
 						addMetadata(locator, "height", heightStr);
 						addMetadata(locator, "width", widthStr);
+
 						int area = width * height;
 						int shape = (width * 100) / height;
 						addMetadata(locator, "area", ""+area);
@@ -1026,6 +1228,10 @@ public class WidgetLocator
 						Locator locator=new Locator();
 
 						locator.setLocationArea(new Rectangle(x, y, width, height));
+						locator.setX(x);
+						locator.setY(y);
+						locator.setWidth(width);
+						locator.setHeight(height);
 
 						addMetadata(locator, "tag", tag);
 						addMetadata(locator, "class", className);
@@ -1084,7 +1290,8 @@ public class WidgetLocator
 	{
 		if(value!=null && value.length()>0)
 		{
-			locator.putMetadata(key, value);
+			String lowercaseValue = value.toLowerCase();
+			locator.putMetadata(key, lowercaseValue);
 		}
 	}
 
@@ -1133,7 +1340,7 @@ public class WidgetLocator
 				}
 			}
 		}
-		
+
 		StringBuffer wordString = new StringBuffer();
 		for(String word:words)
 		{
@@ -1171,8 +1378,13 @@ public class WidgetLocator
 		return false;
 	}
 
-	private int compareNeighborText(String text1, String text2, int maxScore)
+	private int neighborTextSimilarity(String text1, String text2, int maxScore)
 	{
+		if(text1.length()==0 || text2.length()==0)
+		{
+			return 0;
+		}
+
 		String[] words1 = text1.split("\\s+");
 		String[] words2 = text2.split("\\s+");
 		

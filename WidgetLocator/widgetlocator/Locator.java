@@ -14,12 +14,14 @@ public class Locator implements Comparable<Object>
 	private long index=0;
 	private Properties properties=new Properties();
 	private Rectangle locationArea=null;
-	
-	private int similarity=0;
+	private int x=0;
+	private int y=0;
+	private int width=0;
+	private int height=0;
+	private double maxScore=0;
+
 	private double score=0;
-	public Properties scoreParts=new Properties();
-	
-	private static boolean sortOnScore = false;
+	private long duration=0;
 
 	public Locator()
 	{
@@ -30,6 +32,22 @@ public class Locator implements Comparable<Object>
 		setProperties(properties);
 	}
 
+	public Locator clone()
+	{
+		Locator clone = new Locator();
+		clone.index = index;
+		clone.locationArea = new Rectangle(locationArea);
+		clone.properties = new Properties();
+		Set<Object> keySet=properties.keySet();
+		for(Object o:keySet)
+		{
+			String key=(String)o;
+			String value=properties.getProperty(key);
+			clone.properties.put(key, value);
+		}
+		return clone;
+	}
+	
 	public Properties getProperties()
 	{
 		return properties;
@@ -48,6 +66,11 @@ public class Locator implements Comparable<Object>
 	public String getMetadata(String key)
 	{
 		return (String)properties.get(key);
+	}
+
+	public int getNoProperties()
+	{
+		return properties.size();
 	}
 
 	/**
@@ -226,22 +249,6 @@ public class Locator implements Comparable<Object>
 	{
 		Locator compareTo=(Locator)o;
 		return (int)(compareTo.getScore()*1000-getScore()*1000);
-/*
-		if(isSortOnScore())
-		{
-		}
-		return compareTo.getSimilarity()-getSimilarity();
-*/
-	}
-
-	public int getSimilarity()
-	{
-		return similarity;
-	}
-
-	public void setSimilarity(int similarity)
-	{
-		this.similarity = similarity;
 	}
 
 	public double getScore()
@@ -259,13 +266,63 @@ public class Locator implements Comparable<Object>
 		this.score += increaseScore;
 	}
 
-	public static boolean isSortOnScore()
+	public int getX()
 	{
-		return sortOnScore;
+		return x;
 	}
 
-	public static void setSortOnScore(boolean sortOnScore)
+	public void setX(int x)
 	{
-		Locator.sortOnScore = sortOnScore;
+		this.x = x;
+	}
+
+	public int getY()
+	{
+		return y;
+	}
+
+	public void setY(int y)
+	{
+		this.y = y;
+	}
+
+	public int getWidth()
+	{
+		return width;
+	}
+
+	public void setWidth(int width)
+	{
+		this.width = width;
+	}
+
+	public int getHeight()
+	{
+		return height;
+	}
+
+	public void setHeight(int height)
+	{
+		this.height = height;
+	}
+
+	public double getMaxScore()
+	{
+		return maxScore;
+	}
+
+	public void setMaxScore(double maxScore)
+	{
+		this.maxScore = maxScore;
+	}
+
+	public long getDuration()
+	{
+		return duration;
+	}
+
+	public void setDuration(long duration)
+	{
+		this.duration = duration;
 	}
 }

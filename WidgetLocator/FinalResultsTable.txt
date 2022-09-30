@@ -318,4 +318,67 @@ robula:	4	4	0
 montoto:	3	5	0
 Multilocator:	4	4	0
 Similo:	5	0	3
-
+##### Application: Usps
+xpath:	0	36	0
+idxpath:	23	13	0
+ide:	21	12	3
+robula:	20	12	4
+montoto:	23	13	0
+Multilocator:	24	12	0
+Similo:	32	0	4
+##### Application: Bestbuy
+xpath:	0	40	0
+idxpath:	1	39	0
+ide:	21	18	1
+robula:	25	14	1
+montoto:	20	20	0
+Multilocator:	25	15	0
+Similo:	29	0	11
+##### Application: Imdb
+xpath:	0	12	0
+idxpath:	1	11	0
+ide:	2	10	0
+robula:	1	11	0
+montoto:	0	12	0
+Multilocator:	2	10	0
+Similo:	5	0	7
+##### Application: Paypal
+xpath:	0	23	0
+idxpath:	2	21	0
+ide:	2	21	0
+robula:	2	21	0
+montoto:	17	6	0
+Multilocator:	17	6	0
+Similo:	22	0	1
+##### Application: Target
+xpath:	0	17	0
+idxpath:	7	10	0
+ide:	7	10	0
+robula:	3	14	0
+montoto:	1	16	0
+Multilocator:	7	10	0
+Similo:	14	0	3
+##### Application: Foxnews
+xpath:	0	29	0
+idxpath:	24	2	3
+ide:	11	17	1
+robula:	28	0	1
+montoto:	27	1	1
+Multilocator:	28	1	0
+Similo:	28	0	1
+##### Application: Spotify
+xpath:	0	17	0
+idxpath:	0	17	0
+ide:	4	13	0
+robula:	3	14	0
+montoto:	3	14	0
+Multilocator:	4	13	0
+Similo:	15	0	2
+##### Application: Ups
+xpath:	11	8	10
+idxpath:	24	3	2
+ide:	7	19	3
+robula:	22	5	2
+montoto:	6	21	2
+Multilocator:	25	4	0
+Similo:	26	0	3
